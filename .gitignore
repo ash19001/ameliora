@@ -1,0 +1,20 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# test output
+test-results/
+playwright-report/
+
+# env
+.env*
+!.env.example
+
+# AI tooling: skills, agent config, design-tool working files
+.agents/
+.claude/
+skills-lock.json
+.impeccable/
+.taste-skill/

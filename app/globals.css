@@ -1,0 +1,294 @@
+/* ---------- Tokens: The Documentary ---------- */
+:root {
+  --ground: #ffffff;
+  --ink: #111214;
+  --ink-press: #2a2c30;
+  --muted: #5f646b;
+  --line: #d9dbde;
+  /* The one accent: the wordmark's full stop, link underlines and the progress line. Never a fill. */
+  --signal: #e35205;
+
+  --fs-display: clamp(3.25rem, 1.3rem + 5.6vw, 6.75rem);
+  --fs-h2: clamp(2.25rem, 1.25rem + 2.9vw, 4rem);
+  --fs-h3: clamp(1.375rem, 1.15rem + 0.6vw, 1.75rem);
+  --fs-lead: clamp(1.25rem, 1.12rem + 0.4vw, 1.5rem);
+  --fs-body: 1.125rem;
+  --fs-small: 0.9375rem;
+
+  --gutter: clamp(20px, 4vw, 56px);
+  --gap: 24px;
+  --section: clamp(80px, 9vw, 152px);
+  --nav-h: 80px;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 8px); -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  caret-color: var(--ink);
+  scrollbar-color: var(--muted) var(--ground);
+}
+::selection { background: var(--ink); color: #fff; }
+a { color: inherit; text-decoration: none; }
+img, svg { display: block; }
+ul, ol { list-style: none; }
+h1, h2, h3 { text-wrap: balance; font-weight: 700; }
+p { text-wrap: pretty; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+.wrap { padding-inline: var(--gutter); }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); }
+
+h1 { font-size: var(--fs-display); line-height: 0.93; letter-spacing: -0.045em; }
+h2 { font-size: var(--fs-h2); line-height: 1; letter-spacing: -0.035em; }
+h3 { font-size: var(--fs-h3); line-height: 1.2; letter-spacing: -0.015em; }
+.lead { font-size: var(--fs-lead); line-height: 1.4; letter-spacing: -0.005em; }
+
+/* One white ground: sections are separated by space, never by background bands. */
+section.block { padding-block: var(--section); }
+
+/* ---------- Buttons and links ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--ink); color: #fff;
+  font-weight: 600; font-size: 1rem; line-height: 1;
+  padding: 18px 24px;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.btn:active { transform: scale(0.97); }
+.btn--small { padding: 14px 20px; font-size: 1rem; }
+.link {
+  font-weight: 600;
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px;
+  text-decoration-color: var(--signal);
+  transition: color 160ms ease;
+}
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 20px 32px; }
+/* Hover only where there is a real pointer, so taps never leave a stuck state. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { background: var(--ink-press); }
+  .link:hover { color: var(--muted); }
+  .nav-links a:hover { color: var(--ink); }
+  .foot a:hover { color: var(--muted); }
+}
+
+/* ---------- Nav ---------- */
+.nav {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--ground);
+  height: var(--nav-h); display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  transition: box-shadow 200ms ease;
+}
+.nav[data-scrolled] { box-shadow: 0 1px 0 var(--line); } /* taste-skill-ignore: sticky bar floats over content */
+.wordmark { font-weight: 700; font-size: var(--fs-h3); letter-spacing: -0.03em; }
+.dot { color: var(--signal); }
+.nav-links { display: flex; gap: 36px; font-size: 1rem; font-weight: 500; }
+.nav-links a { position: relative; padding-block: 6px; color: var(--muted); transition: color 160ms ease; }
+.nav-links a[aria-current="true"] { color: var(--ink); }
+.nav-links a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--ink);
+  transform: scaleX(0); transform-origin: left; transition: transform 240ms var(--ease-out);
+}
+.nav-links a[aria-current="true"]::after { transform: scaleX(1); }
+
+/* ---------- Photographs ---------- */
+.photo { margin: 0; }
+.photo img { width: 100%; height: auto; }
+figcaption { font-size: var(--fs-small); color: var(--muted); }
+.photo figcaption { margin-top: 12px; }
+
+/* ---------- Hero ---------- */
+/* The photograph owns the right two-thirds; the copy's white panel overlaps its left edge. */
+.hero { position: relative; display: flex; align-items: center; min-height: clamp(620px, calc(100svh - var(--nav-h)), 980px); overflow: clip; }
+.hero-photo { position: absolute; inset: 0 0 0 34%; margin: 0; overflow: hidden; }
+.hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; }
+.hero-photo figcaption { position: absolute; left: 0; bottom: 0; background: var(--ground); padding: 12px 20px 0 16px; }
+.hero-inner { position: relative; z-index: 1; width: 100%; }
+.hero-panel { background: var(--ground); width: min(780px, 60%); margin-left: calc(-1 * var(--gutter)); padding: 56px 64px 64px var(--gutter); }
+.hero-panel .lead { margin-top: 28px; max-width: 31ch; }
+.hero-panel .actions { margin-top: 40px; }
+
+/* On load the photograph settles from a slight scale while the copy rises. */
+@keyframes settle { from { transform: scale(1.06); } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(16px); } }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-photo img { animation: settle 1600ms var(--ease-out) backwards; }
+  .hero-panel > * { animation: rise-in 800ms var(--ease-out) backwards; }
+  .hero-panel > :nth-child(2) { animation-delay: 90ms; }
+  .hero-panel > :nth-child(3) { animation-delay: 180ms; }
+}
+
+/* ---------- The problem ---------- */
+.problem { align-items: end; }
+.statement { grid-column: 1 / span 7; font-size: var(--fs-h2); font-weight: 700; line-height: 1; letter-spacing: -0.035em; }
+.problem-note { grid-column: 9 / span 4; font-size: var(--fs-lead); line-height: 1.4; }
+
+/* ---------- Approach ---------- */
+.approach { align-items: center; }
+.approach-photo { grid-column: 1 / span 6; }
+.approach-copy { grid-column: 8 / span 5; }
+.parts { margin-top: 48px; display: grid; gap: 32px; }
+.parts p { margin-top: 6px; }
+
+/* ---------- The scroll scene ----------
+   Without motion (reduced motion, no script) "How an engagement runs" is an ordinary section with every
+   step shown. Live, the section is its stage's height plus `--hold` screens tall and the stage sticks
+   while the page scrolls past; SceneDriver maps the native scroll to progress. Nothing captures the wheel. */
+.scene { position: relative; overflow-x: clip; }
+.scene-stage { position: relative; }
+@media (prefers-reduced-motion: no-preference) {
+  html.js .scene.is-live { height: calc(var(--stage-h, 100svh) + var(--hold, 1.5) * 100svh); padding-block: 0; }
+  html.js .scene.is-live > .scene-stage {
+    position: sticky; top: var(--stick, var(--nav-h));
+    min-height: calc(100svh - var(--nav-h));
+    display: flex; flex-direction: column; justify-content: center;
+    padding-block: clamp(16px, 3vh, 40px);
+  }
+}
+
+/* ---------- How an engagement runs ---------- */
+.process { align-items: center; }
+.process-photo { grid-column: 1 / span 5; }
+.process-photo img { aspect-ratio: 4 / 5; object-fit: cover; }
+.process-copy { grid-column: 7 / span 6; }
+.note { margin-top: 16px; font-size: var(--fs-lead); line-height: 1.4; }
+.steps-wrap { position: relative; margin-top: 32px; padding-left: 32px; }
+/* The line beside the steps fills as the scroll passes through them (finished by default). */
+.steps-line { position: absolute; left: 0; top: 18px; bottom: 6px; width: 2px; background: var(--line); }
+.steps-line::after { content: ""; position: absolute; inset: 0; background: var(--signal); transform-origin: top; transform: scaleY(var(--play, 1)); }
+.steps { display: grid; gap: 22px; }
+.step-time { display: block; font-size: var(--fs-small); font-weight: 600; color: var(--muted); }
+.steps h3 { margin-top: 2px; }
+.steps p { margin-top: 4px; max-width: 62ch; }
+@media (prefers-reduced-motion: no-preference) {
+  /* Live, the photograph fills the stage's height and the steps not yet reached wait in grey. */
+  html.js .scene.is-live .process-photo img { aspect-ratio: auto; height: min(calc(100svh - var(--nav-h) - 140px), 720px); }
+  html.js .scene.is-live .steps li { transition: color 300ms ease; }
+  html.js .scene.is-live .steps li:not([data-on]),
+  html.js .scene.is-live .steps li:not([data-on]) .step-time { color: var(--muted); }
+}
+
+/* ---------- Results ---------- */
+.res-head { display: flex; justify-content: space-between; align-items: end; gap: 48px; }
+.res-head .lead { max-width: 40ch; }
+.res { width: 100%; border-collapse: collapse; margin-top: 72px; }
+.res th { text-align: left; font-size: var(--fs-small); font-weight: 600; color: var(--muted); padding: 0 24px 16px 0; border-bottom: 2px solid var(--ink); }
+.res td { padding: 28px 24px 28px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.res .who { width: 24%; color: var(--muted); }
+.res .what { width: 30%; font-weight: 600; }
+.res .v { font-size: var(--fs-lead); font-weight: 600; letter-spacing: -0.01em; }
+
+/* ---------- Commitments ---------- */
+.commitments { align-items: start; }
+.commitments h2 { grid-column: 1 / span 4; }
+.commit-list { grid-column: 6 / span 7; }
+.commit-list { display: grid; gap: 32px; }
+.commit-list p { font-size: var(--fs-h3); font-weight: 600; line-height: 1.3; letter-spacing: -0.015em; }
+.commit-list span { font-weight: 400; }
+
+/* ---------- Close ---------- */
+.close { align-items: center; }
+.close-photo { grid-column: 1 / span 7; }
+.close-copy { grid-column: 9 / span 4; }
+.close-copy .lead { margin-top: 24px; }
+.close-copy .actions { margin-top: 36px; }
+
+/* ---------- Footer ---------- */
+.foot { padding-top: 32px; padding-bottom: 40px; }
+.foot-grid { display: grid; grid-template-columns: 6fr 3fr 3fr; gap: 32px; }
+.foot-brand p { margin-top: 10px; color: var(--muted); }
+.foot-h { font-size: var(--fs-small); font-weight: 600; color: var(--muted); letter-spacing: 0; line-height: 1.4; margin-bottom: 14px; }
+.foot ul li + li { margin-top: 8px; }
+.foot-base { margin-top: 80px; display: flex; justify-content: space-between; gap: 12px 48px; flex-wrap: wrap; font-size: var(--fs-small); color: var(--ink); }
+.foot-base p { max-width: 62ch; }
+
+/* ---------- Mobile booking bar ---------- */
+.mobile-cta { display: none; }
+
+/* ---------- Reveal on scroll (only when JS runs) ---------- */
+html.js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); transition-delay: calc(var(--i, 0) * 80ms); }
+html.js [data-reveal][data-in] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] { transform: none; transition: opacity 300ms ease; transition-delay: 0ms; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .approach-photo, .close-photo { grid-column: 1 / span 6; }
+  .approach-copy, .close-copy { grid-column: 7 / span 6; }
+  .process-photo { grid-column: 1 / span 5; }
+  .process-copy { grid-column: 6 / span 7; }
+  .commitments h2 { grid-column: 1 / span 4; }
+  .commit-list { grid-column: 5 / span 8; }
+  .res-head { flex-direction: column; align-items: start; gap: 20px; }
+}
+@media (max-width: 900px) {
+  /* Stacked, the photograph leads and the copy's panel overlaps its lower edge. */
+  .hero { display: block; min-height: 0; }
+  .hero-photo { position: relative; inset: auto; aspect-ratio: 5 / 4; }
+  .hero-panel { width: auto; margin: -64px 48px 0 calc(-1 * var(--gutter)); padding: 28px 24px 8px var(--gutter); }
+  .approach-photo, .approach-copy, .close-photo, .close-copy, .process-photo, .process-copy, .commitments h2, .commit-list { grid-column: 1 / -1; }
+  .approach-copy { margin-top: 40px; }
+  /* The close leads with its call; the photograph and caption follow. */
+  .close-copy { order: -1; margin-bottom: 48px; }
+  .statement, .problem-note { grid-column: 1 / -1; }
+  .problem-note { margin-top: 28px; }
+  .commit-list { margin-top: 40px; }
+  .process-photo { margin-bottom: 40px; }
+  .process-photo img { aspect-ratio: 3 / 2; }
+  /* The pinned stage has to fit a phone screen, so the photograph steps aside while it runs. */
+  @media (prefers-reduced-motion: no-preference) {
+    html.js .scene.is-live .process-photo { display: none; }
+  }
+  .foot-grid { grid-template-columns: 1fr 1fr; }
+  .foot-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 860px) {
+  .nav-links { display: none; }
+}
+@media (max-width: 720px) {
+  :root { --nav-h: 68px; }
+  .btn--small { padding: 12px 16px; }
+  .hero-panel { margin-right: 20px; }
+  .hero-photo figcaption { display: none; }
+  .steps-wrap { margin-top: 28px; padding-left: 24px; }
+  .steps { gap: 16px; }
+  /* Pinned on a phone, the stage leaves room for the booking bar and sets the steps a size smaller. */
+  @media (prefers-reduced-motion: no-preference) {
+    html.js .scene.is-live > .scene-stage { padding-bottom: 92px; }
+    html.js .scene.is-live .note { font-size: var(--fs-body); }
+    html.js .scene.is-live .steps p { font-size: var(--fs-small); line-height: 1.5; }
+  }
+  .res { margin-top: 48px; }
+  .res thead { display: none; }
+  .res tr { display: block; padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .res td, .res .who, .res .what { display: block; border: 0; padding: 0; width: auto; }
+  .res td + td { margin-top: 6px; }
+  .res td[data-label]::before { content: attr(data-label) ": "; color: var(--muted); font-weight: 400; }
+  .foot-base { margin-top: 48px; }
+  .mobile-cta {
+    display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom));
+    background: var(--ground); box-shadow: 0 -1px 0 var(--line); /* taste-skill-ignore: fixed bar floats over content */
+    transform: translateY(110%); visibility: hidden;
+    transition: transform 160ms var(--ease-out), visibility 0s linear 160ms;
+  }
+  .mobile-cta[data-show] { transform: none; visibility: visible; transition: transform 240ms var(--ease-out), visibility 0s; }
+  /* One booking button on screen at a time: the bar replaces the nav's. */
+  .nav .btn { transition: opacity 200ms ease, transform 160ms var(--ease-out); }
+  body:has(.mobile-cta[data-show]) .nav .btn { opacity: 0; pointer-events: none; }
+  .mobile-cta .btn { width: 100%; }
+}
